@@ -1,5 +1,7 @@
 use anyhow::Result;
 
+use crate::config::stage::Stage;
+
 use super::config_model::{Database, DotEnvyConfig, Server};
 
 pub fn load() -> Result<DotEnvyConfig> {
@@ -22,4 +24,12 @@ pub fn load() -> Result<DotEnvyConfig> {
     };
 
     Ok(DotEnvyConfig { server, database })
+}
+
+pub fn get_stage() -> Stage {
+    dotenvy::dotenv().ok();
+
+    let stage_str = std::env::var("STAGE").unwrap_or("".to_string());
+
+    Stage::try_from(&stage_str).unwrap_or_default()
 }
