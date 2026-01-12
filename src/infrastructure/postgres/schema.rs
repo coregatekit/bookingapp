@@ -18,6 +18,22 @@ diesel::table! {
 }
 
 diesel::table! {
+    seats (id) {
+        id -> Uuid,
+        #[max_length = 10]
+        seat_row -> Varchar,
+        #[max_length = 10]
+        seat_column -> Varchar,
+        #[max_length = 10]
+        seat_number -> Varchar,
+        is_reserved -> Bool,
+        zone_id -> Uuid,
+        created_at -> Timestamptz,
+        updated_at -> Timestamptz,
+    }
+}
+
+diesel::table! {
     users (id) {
         id -> Uuid,
         #[max_length = 100]
@@ -46,10 +62,12 @@ diesel::table! {
     }
 }
 
+diesel::joinable!(seats -> zones (zone_id));
 diesel::joinable!(zones -> events (event_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
     events,
+    seats,
     users,
     zones,
 );
