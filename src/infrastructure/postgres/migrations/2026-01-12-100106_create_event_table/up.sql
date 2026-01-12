@@ -1,0 +1,12 @@
+-- Your SQL goes here
+CREATE TABLE IF NOT EXISTS events (
+  id UUID PRIMARY KEY DEFAULT uuidv7(),
+  name TEXT NOT NULL,
+  description TEXT,
+  performer VARCHAR(255) NOT NULL,
+  date TIMESTAMPTZ NOT NULL,
+  location VARCHAR(255) NOT NULL,
+  status VARCHAR(50) NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
