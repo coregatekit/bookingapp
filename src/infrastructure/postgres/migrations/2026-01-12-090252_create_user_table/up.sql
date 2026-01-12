@@ -1,0 +1,10 @@
+-- Your SQL goes here
+CREATE TABLE users (
+  id UUID PRIMARY KEY DEFAULT uuidv7(),
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  mobile_phone VARCHAR(15) UNIQUE NOT NULL,
+  gender VARCHAR(10) NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
