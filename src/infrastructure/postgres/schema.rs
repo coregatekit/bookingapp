@@ -33,7 +33,23 @@ diesel::table! {
     }
 }
 
+diesel::table! {
+    zones (id) {
+        id -> Uuid,
+        #[max_length = 50]
+        label -> Varchar,
+        price -> Numeric,
+        total_seats -> Int4,
+        event_id -> Uuid,
+        created_at -> Timestamptz,
+        updated_at -> Timestamptz,
+    }
+}
+
+diesel::joinable!(zones -> events (event_id));
+
 diesel::allow_tables_to_appear_in_same_query!(
     events,
     users,
+    zones,
 );
