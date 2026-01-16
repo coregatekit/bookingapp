@@ -1,0 +1,21 @@
+-- Your SQL goes here
+CREATE TABLE IF NOT EXISTS bookings (
+  id UUID PRIMARY KEY DEFAULT uuidv7(),
+  event_id UUID NOT NULL,
+  total_price NUMERIC(10, 2) NOT NULL,
+  status VARCHAR(50) NOT NULL,
+  user_id UUID NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS booking_seats (
+  id UUID PRIMARY KEY DEFAULT uuidv7(),
+  booking_id UUID NOT NULL,
+  seat_id UUID NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  CONSTRAINT fk_booking FOREIGN KEY (booking_id) REFERENCES bookings (id) ON DELETE CASCADE,
+  CONSTRAINT fk_seat FOREIGN KEY (seat_id) REFERENCES seats (id) ON DELETE CASCADE
+)

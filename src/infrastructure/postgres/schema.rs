@@ -1,6 +1,29 @@
 // @generated automatically by Diesel CLI.
 
 diesel::table! {
+    booking_seats (id) {
+        id -> Uuid,
+        booking_id -> Uuid,
+        seat_id -> Uuid,
+        created_at -> Timestamptz,
+        updated_at -> Timestamptz,
+    }
+}
+
+diesel::table! {
+    bookings (id) {
+        id -> Uuid,
+        event_id -> Uuid,
+        total_price -> Numeric,
+        #[max_length = 50]
+        status -> Varchar,
+        user_id -> Uuid,
+        created_at -> Timestamptz,
+        updated_at -> Timestamptz,
+    }
+}
+
+diesel::table! {
     events (id) {
         id -> Uuid,
         name -> Text,
@@ -62,10 +85,15 @@ diesel::table! {
     }
 }
 
+diesel::joinable!(booking_seats -> bookings (booking_id));
+diesel::joinable!(booking_seats -> seats (seat_id));
+diesel::joinable!(bookings -> users (user_id));
 diesel::joinable!(seats -> zones (zone_id));
 diesel::joinable!(zones -> events (event_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
+    booking_seats,
+    bookings,
     events,
     seats,
     users,
