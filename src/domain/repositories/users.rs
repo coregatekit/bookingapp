@@ -7,5 +7,5 @@ use crate::domain::entities::users::UserEntity;
 #[async_trait]
 #[automock]
 pub trait UsersRepository {
-    async fn find_by_username(&self, username: String) -> Result<UserEntity>;
+    async fn find_by_email(&self, email: String) -> Result<UserEntity>;
 }
