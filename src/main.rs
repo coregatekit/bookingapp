@@ -1,4 +1,6 @@
-use bookingapp::{config::config_loader, infrastructure::axum_http::http_serve::start};
+use std::sync::Arc;
+
+use bookingapp::{config::config_loader, infrastructure::{axum_http::http_serve::start, postgres::postgres_connection}};
 use tracing::{error, info};
 
 #[tokio::main]
@@ -17,5 +19,15 @@ async fn main() {
 
     info!("✅ Configuration loaded successfully: {:?}", dotenvy_config);
 
-    start().await.expect("❌ Failed to start server!");
+    let postgres_pool = match postgres_connection::establish_connection(&dotenvy_config.database.url) {
+        Ok(pool) => pool,
+        Err(e) => {
+            error!("❌ Failed to connect to the database: {}", e);
+            std::process::exit(1);
+        }
+    };
+
+    info!("✅ Database connection established successfully");
+
+    start(Arc::new(dotenvy_config), Arc::new(postgres_pool)).await.expect("❌ Failed to start server!");
 }
