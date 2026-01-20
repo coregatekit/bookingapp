@@ -1,6 +1,11 @@
 use chrono::NaiveDateTime;
-use diesel::sql_types::Uuid;
+use diesel::prelude::*;
+use uuid::Uuid;
 
+use crate::infrastructure::postgres::schema::users;
+
+#[derive(Debug, Clone, Identifiable, Selectable, Queryable)]
+#[diesel(table_name = users)]
 pub struct UserEntity {
     pub id: Uuid,
     pub name: String,
