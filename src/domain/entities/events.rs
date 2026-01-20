@@ -18,3 +18,16 @@ pub struct EventEntity {
     pub created_at: NaiveDateTime,
     pub updated_at: NaiveDateTime,
 }
+
+#[derive(Debug, Clone, Insertable, Queryable)]
+#[diesel(table_name = events)]
+pub struct CreateEventEntity {
+  pub name: String,
+  pub description: String,
+  pub performer: String,
+  pub date: NaiveDateTime,
+  pub location: String,
+  pub status: String,
+  pub created_at: NaiveDateTime,
+  pub updated_at: NaiveDateTime,
+}
