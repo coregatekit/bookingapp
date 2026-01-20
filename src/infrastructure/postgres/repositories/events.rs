@@ -1,0 +1,35 @@
+use anyhow::{Ok, Result};
+use diesel::{RunQueryDsl, insert_into};
+use std::sync::Arc;
+
+use async_trait::async_trait;
+use uuid::Uuid;
+
+use crate::{
+    domain::{entities::events::CreateEventEntity, repositories::events::EventsRepository},
+    infrastructure::postgres::{postgres_connection::PgPoolSquad, schema::events},
+};
+
+pub struct EventPostgres {
+    db_pool: Arc<PgPoolSquad>,
+}
+
+impl EventPostgres {
+    pub fn new(db_pool: Arc<PgPoolSquad>) -> Self {
+        Self { db_pool }
+    }
+}
+
+#[async_trait]
+impl EventsRepository for EventPostgres {
+    async fn create(&self, create_event: CreateEventEntity) -> Result<Uuid> {
+        let mut conn = Arc::clone(&self.db_pool).get()?;
+
+        let result = insert_into(events::table)
+            .values(create_event)
+            .returning(events::id)
+            .get_result(&mut conn)?;
+
+        Ok(result)
+    }
+}
