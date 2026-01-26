@@ -10,6 +10,7 @@ axum = "0.8.8"
 axum-extra = { version = "0.12.5", features = ["cookie", "typed-header"] }
 chrono = { version = "0.4.43", features = ["serde"] } 
 diesel = { version = "2.3.5", features = [
+  "numeric",
   "postgres",
   "serde_json",
   "chrono",
