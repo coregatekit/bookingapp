@@ -1,4 +1,5 @@
 use anyhow::Result;
+use diesel::{RunQueryDsl, insert_into};
 use std::sync::Arc;
 
 use async_trait::async_trait;
@@ -9,7 +10,7 @@ use crate::{
         entities::zones::{CreateZoneEntity, UpdateZoneEntity, ZoneEntity},
         repositories::zones::ZonesRepository,
     },
-    infrastructure::postgres::postgres_connection::PgPoolSquad,
+    infrastructure::postgres::{postgres_connection::PgPoolSquad, schema::zones},
 };
 
 pub struct ZonePostgres {
@@ -25,8 +26,14 @@ impl ZonePostgres {
 #[async_trait]
 impl ZonesRepository for ZonePostgres {
     async fn create_zone(&self, create_zone: CreateZoneEntity) -> Result<Uuid> {
-        // Implementation goes here
-        unimplemented!()
+        let mut conn = Arc::clone(&self.db_pool).get()?;
+
+        let result = insert_into(zones::table)
+            .values(create_zone)
+            .returning(zones::id)
+            .get_result(&mut conn)?;
+
+        Ok(result)
     }
 
     async fn update_zone(&self, zone_id: Uuid, zone: UpdateZoneEntity) -> Result<()> {
