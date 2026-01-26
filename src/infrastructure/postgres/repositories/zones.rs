@@ -1,5 +1,5 @@
 use anyhow::Result;
-use diesel::{RunQueryDsl, insert_into};
+use diesel::{RunQueryDsl, SelectableHelper, insert_into};
 use std::sync::Arc;
 
 use async_trait::async_trait;
@@ -34,6 +34,29 @@ impl ZonesRepository for ZonePostgres {
             .get_result(&mut conn)?;
 
         Ok(result)
+    }
+
+    async fn create_zones(
+        &self,
+        event_id: Uuid,
+        create_zones: Vec<CreateZoneEntity>,
+    ) -> Result<Vec<ZoneEntity>> {
+        let mut conn = Arc::clone(&self.db_pool).get()?;
+
+        let zones_with_event_id: Vec<CreateZoneEntity> = create_zones
+            .into_iter()
+            .map(|mut zone| {
+                zone.event_id = event_id;
+                zone
+            })
+            .collect();
+
+        let results = insert_into(zones::table)
+            .values(&zones_with_event_id)
+            .returning(ZoneEntity::as_select())
+            .get_results(&mut conn)?;
+
+        Ok(results)
     }
 
     async fn get_zone_info(&self, event_id: Uuid) -> Result<ZoneEntity> {
