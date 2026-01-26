@@ -1,0 +1,6 @@
+-- Your SQL goes here
+ALTER TABLE zones
+ALTER COLUMN price TYPE DECIMAL(10, 2);
+
+ALTER TABLE bookings
+ALTER COLUMN total_price TYPE DECIMAL(10, 2);
