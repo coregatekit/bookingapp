@@ -1,5 +1,10 @@
 use anyhow::{Ok, Result};
-use diesel::{ExpressionMethods, RunQueryDsl, SelectableHelper, insert_into, query_dsl::methods::{FilterDsl, SelectDsl}};
+use diesel::{
+    ExpressionMethods, RunQueryDsl, SelectableHelper,
+    dsl::{exists, select},
+    insert_into,
+    query_dsl::methods::{FilterDsl, SelectDsl},
+};
 use std::sync::Arc;
 
 use async_trait::async_trait;
@@ -43,6 +48,15 @@ impl EventsRepository for EventPostgres {
             .filter(events::id.eq(id))
             .select(EventEntity::as_select())
             .first::<EventEntity>(&mut conn)?;
+
+        Ok(result)
+    }
+
+    async fn check_existence(&self, id: Uuid) -> Result<bool> {
+        let mut conn = self.db_pool.get()?;
+
+        let result: bool =
+            select(exists(events::table.filter(events::id.eq(id)))).get_result::<bool>(&mut conn)?;
 
         Ok(result)
     }

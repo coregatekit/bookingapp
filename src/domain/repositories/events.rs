@@ -10,4 +10,5 @@ use crate::domain::entities::events::{CreateEventEntity, EventEntity};
 pub trait EventsRepository {
     async fn create(&self, create_event: CreateEventEntity) -> Result<Uuid>;
     async fn get_event_info(&self, id: Uuid) -> Result<EventEntity>;
+    async fn check_existence(&self, id: Uuid) -> Result<bool>;
 }
