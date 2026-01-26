@@ -26,8 +26,8 @@ use crate::{
 pub async fn start(config: Arc<DotEnvyConfig>, db_pool: Arc<PgPoolSquad>) -> Result<()> {
     let app = Router::new()
         .fallback(default_routers::not_found)
-        .nest("/users", routers::users::routes(Arc::clone(&db_pool)))
-        .route("/health", get(default_routers::health_check))
+        .nest("/api/users", routers::users::routes(Arc::clone(&db_pool)))
+        .route("/api/health", get(default_routers::health_check))
         .layer(TimeoutLayer::with_status_code(
             StatusCode::REQUEST_TIMEOUT,
             Duration::from_secs(config.server.time_out),
