@@ -41,7 +41,15 @@ where
             return Err(anyhow::anyhow!("Event does not exist"));
         }
 
-        let zones = Vec::new();
+        let create_zone_entities: Vec<_> = create_zone_models
+            .iter()
+            .map(|model| model.to_entity(event_id).unwrap())
+            .collect();
+        let zones = self
+            .zones_repository
+            .create_zones(event_id, create_zone_entities)
+            .await?;
+
         Ok(zones)
     }
 }
