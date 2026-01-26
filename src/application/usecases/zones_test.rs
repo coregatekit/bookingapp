@@ -38,4 +38,31 @@ mod test {
 
         assert!(result.is_ok());
     }
+
+    #[tokio::test]
+    async fn test_should_throw_an_error_when_event_does_not_exist() {
+        let mut mock_event_repo = MockEventsRepository::new();
+        let mock_zone_repo = MockZonesRepository::new();
+
+        let event_id = Uuid::now_v7();
+        let expected_event_id = event_id;
+
+        mock_event_repo
+            .expect_check_existence()
+            .withf(move |id| *id == expected_event_id)
+            .returning(|_| Box::pin(async { Ok(false) }));
+
+        let use_case = ZonesUseCase::new(Arc::new(mock_zone_repo), Arc::new(mock_event_repo));
+
+        let mut create_zone_models = Vec::new();
+        create_zone_models.push(CreateZoneModel {
+            label: "VIP".to_string(),
+            price: "150.00".parse().unwrap(),
+            total_seats: 50,
+        });
+
+        let result = use_case.create_zone(event_id, create_zone_models).await;
+
+        assert!(result.is_err());
+    }
 }
