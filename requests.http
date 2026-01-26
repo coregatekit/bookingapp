@@ -1,0 +1,13 @@
+@base_url = http://localhost:3000
+
+### Health Check ###
+GET {{base_url}}/api/health
+
+### Users ###
+### Find User by Email
+GET {{base_url}}/api/users/find/aerichandesu@example.com
+
+### Events ###
+### Create Event
+POST {{base_url}}/api/events
+Content-Type: application/json
