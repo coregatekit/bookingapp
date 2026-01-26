@@ -9,7 +9,7 @@ use crate::domain::{
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CreateEventModel {
     pub name: String,
-    pub description: String,
+    pub description: Option<String>,
     pub performer: String,
     pub date: String,
     pub location: String,
@@ -22,12 +22,11 @@ impl CreateEventModel {
             description: self.description.clone(),
             performer: self.performer.clone(),
             date: DateTime::parse_from_rfc3339(&self.date)?
-                .with_timezone(&Utc)
-                .naive_utc(),
+                .with_timezone(&Utc),
             location: self.location.clone(),
             status: EventStatuses::Scheduled.to_string(),
-            created_at: Utc::now().naive_utc(),
-            updated_at: Utc::now().naive_utc(),
+            created_at: Utc::now(),
+            updated_at: Utc::now(),
         })
     }
 }

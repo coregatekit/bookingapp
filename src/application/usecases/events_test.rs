@@ -16,7 +16,7 @@ mod test {
         let mock_event_id = Uuid::now_v7();
         let mock_create_event_model = CreateEventModel {
             name: "Test Event".to_string(),
-            description: "This is a test event.".to_string(),
+            description: Some("This is a test event.".to_string()),
             performer: "Test Performer".to_string(),
             date: "2026-02-01T10:00:00Z".to_string(),
             location: "Test Location".to_string(),
