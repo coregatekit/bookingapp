@@ -21,7 +21,6 @@ pub struct ZoneEntity {
 #[derive(Debug, Clone, Insertable, Queryable, Serialize, Deserialize)]
 #[diesel(table_name = zones)]
 pub struct CreateZoneEntity {
-    pub event_id: Uuid,
     pub label: String,
     pub price: BigDecimal,
     pub total_seats: i32,

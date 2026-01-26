@@ -3,7 +3,8 @@ use crate::domain::{
     repositories::{events::EventsRepository, zones::ZonesRepository},
     value_objects::zone_model::CreateZoneModel,
 };
-use anyhow::Result;
+use anyhow::{Ok, Result};
+use uuid::Uuid;
 
 pub struct ZonesUseCase<T1, T2>
 where
@@ -31,8 +32,16 @@ where
 
     pub async fn create_zone(
         &self,
+        event_id: Uuid,
         create_zone_models: Vec<CreateZoneModel>,
     ) -> Result<Vec<ZoneEntity>> {
-        unimplemented!()
+        let event_exists = self.events_repository.check_existence(event_id).await?;
+
+        if !event_exists {
+            return Err(anyhow::anyhow!("Event does not exist"));
+        }
+
+        let zones = Vec::new();
+        Ok(zones)
     }
 }
