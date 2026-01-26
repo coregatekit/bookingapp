@@ -175,6 +175,7 @@ dependencies = [
  "num-bigint",
  "num-integer",
  "num-traits",
+ "serde",
 ]
 
 [[package]]
@@ -200,6 +201,7 @@ dependencies = [
  "async-trait",
  "axum",
  "axum-extra",
+ "bigdecimal",
  "chrono",
  "diesel",
  "dotenvy",
