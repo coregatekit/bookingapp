@@ -1,4 +1,9 @@
-use crate::domain::repositories::{events::EventsRepository, zones::ZonesRepository};
+use crate::domain::{
+    entities::zones::ZoneEntity,
+    repositories::{events::EventsRepository, zones::ZonesRepository},
+    value_objects::zone_model::CreateZoneModel,
+};
+use anyhow::Result;
 
 pub struct ZonesUseCase<T1, T2>
 where
@@ -22,5 +27,12 @@ where
             zones_repository,
             events_repository,
         }
+    }
+
+    pub async fn create_zone(
+        &self,
+        create_zone_models: Vec<CreateZoneModel>,
+    ) -> Result<Vec<ZoneEntity>> {
+        unimplemented!()
     }
 }
