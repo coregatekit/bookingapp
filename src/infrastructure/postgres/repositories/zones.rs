@@ -7,7 +7,7 @@ use uuid::Uuid;
 
 use crate::{
     domain::{
-        entities::zones::{CreateZoneEntity, UpdateZoneEntity, ZoneEntity},
+        entities::zones::{CreateZoneEntity, ZoneEntity},
         repositories::zones::ZonesRepository,
     },
     infrastructure::postgres::{postgres_connection::PgPoolSquad, schema::zones},
@@ -36,17 +36,7 @@ impl ZonesRepository for ZonePostgres {
         Ok(result)
     }
 
-    async fn update_zone(&self, zone_id: Uuid, zone: UpdateZoneEntity) -> Result<()> {
-        // Implementation goes here
-        unimplemented!()
-    }
-
     async fn get_zone_info(&self, event_id: Uuid) -> Result<ZoneEntity> {
-        // Implementation goes here
-        unimplemented!()
-    }
-
-    async fn delete_zone(&self, zone_id: Uuid) -> Result<()> {
         // Implementation goes here
         unimplemented!()
     }

@@ -28,12 +28,3 @@ pub struct CreateZoneEntity {
     pub created_at: NaiveDateTime,
     pub updated_at: NaiveDateTime,
 }
-
-#[derive(Debug, Clone, AsChangeset, Serialize, Deserialize)]
-#[diesel(table_name = zones)]
-pub struct UpdateZoneEntity {
-    pub label: Option<String>,
-    pub price: Option<BigDecimal>,
-    pub total_seats: Option<i32>,
-    pub updated_at: NaiveDateTime,
-}
