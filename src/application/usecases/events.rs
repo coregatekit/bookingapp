@@ -1,10 +1,11 @@
 use std::sync::Arc;
 
 use anyhow::Result;
+use async_trait::async_trait;
 use uuid::Uuid;
 
 use crate::{
-    application::usecases::zones_port::ZonesPort,
+    application::usecases::{events_port::EventsPort, zones_port::ZonesPort},
     domain::{
         repositories::events::EventsRepository, value_objects::event_model::CreateEventModel,
     },
@@ -30,11 +31,22 @@ where
             zones_port,
         }
     }
+}
 
-    pub async fn create(&self, create_event_model: CreateEventModel) -> Result<Uuid> {
+#[async_trait]
+impl<ER, ZP> EventsPort for EventsUseCase<ER, ZP>
+where
+    ER: EventsRepository + Send + Sync,
+    ZP: ZonesPort + Send + Sync,
+{
+    async fn create(&self, create_event_model: CreateEventModel) -> Result<Uuid> {
         let create_event_entity = create_event_model.to_entity()?;
 
         let event_id = self.events_repository.create(create_event_entity).await?;
+
+        if let Some(zone_models) = create_event_model.create_zone {
+            self.zones_port.create_zones(event_id, zone_models).await?;
+        }
 
         Ok(event_id)
     }
