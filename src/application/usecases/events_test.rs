@@ -6,13 +6,14 @@ mod test {
     use uuid::Uuid;
 
     use crate::{
-        application::usecases::events::EventsUseCase,
+        application::usecases::{events::EventsUseCase, zones_port::MockZonesPort},
         domain::{repositories::events::MockEventsRepository, value_objects::event_model::CreateEventModel},
     };
 
     #[tokio::test]
     async fn test_create_event() {
         let mut mock_event_repo = MockEventsRepository::new();
+        let mock_zone_port = MockZonesPort::new();
         let mock_event_id = Uuid::now_v7();
         let mock_create_event_model = CreateEventModel {
             name: "Test Event".to_string(),
@@ -27,7 +28,7 @@ mod test {
             .expect_create()
             .returning(move |_| Box::pin(async move { Ok(mock_event_id) }));
 
-        let use_case = EventsUseCase::new(Arc::new(mock_event_repo));
+        let use_case = EventsUseCase::new(Arc::new(mock_event_repo), Arc::new(mock_zone_port));
 
         let result = use_case.create(mock_create_event_model).await;
 
