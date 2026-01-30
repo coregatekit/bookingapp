@@ -78,7 +78,10 @@ mod test {
         let mut mock_zone_repo = MockZonesRepository::new();
 
         let event_id = Uuid::now_v7();
+        let mock_zone_id_1 = Uuid::now_v7();
+        let mock_zone_id_2 = Uuid::now_v7();
         let now = Utc::now();
+
         mock_event_repo
             .expect_check_existence()
             .returning(|_| Box::pin(async { Ok(true) }));
@@ -87,8 +90,8 @@ mod test {
             Box::pin(async move {
                 Ok(vec![
                     ZoneEntity {
-                        id: Uuid::now_v7(),
-                        event_id: Uuid::now_v7(),
+                        id: mock_zone_id_1,
+                        event_id: event_id,
                         label: "VIP".to_string(),
                         price: "150.00".parse().unwrap(),
                         total_seats: 50,
@@ -96,8 +99,8 @@ mod test {
                         updated_at: now_clone,
                     },
                     ZoneEntity {
-                        id: Uuid::now_v7(),
-                        event_id: Uuid::now_v7(),
+                        id: mock_zone_id_2,
+                        event_id: event_id,
                         label: "VVIP".to_string(),
                         price: "200.00".parse().unwrap(),
                         total_seats: 50,
@@ -127,5 +130,7 @@ mod test {
         assert!(result.is_ok());
         let zones = result.unwrap();
         assert_eq!(zones.len(), 2);
+        assert!(zones.contains(&mock_zone_id_1));
+        assert!(zones.contains(&mock_zone_id_2));
     }
 }

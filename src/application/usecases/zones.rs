@@ -1,7 +1,6 @@
 use crate::{
     application::usecases::zones_port::ZonesPort,
     domain::{
-        entities::zones::ZoneEntity,
         repositories::{events::EventsRepository, zones::ZonesRepository},
         value_objects::zone_model::CreateZoneModel,
     },
@@ -41,7 +40,7 @@ where
         &self,
         event_id: Uuid,
         create_zone_models: Vec<CreateZoneModel>,
-    ) -> Result<Vec<ZoneEntity>> {
+    ) -> Result<Vec<Uuid>> {
         let event_exists = self.events_repository.check_existence(event_id).await?;
 
         if !event_exists {
@@ -57,6 +56,8 @@ where
             .create_zones(event_id, create_zone_entities)
             .await?;
 
-        Ok(zones)
+        let result = zones.iter().map(|zone| zone.id).collect();
+
+        Ok(result)
     }
 }
