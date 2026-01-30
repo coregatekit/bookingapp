@@ -3,7 +3,7 @@ use chrono::{DateTime, ParseError, Utc};
 use serde::{Deserialize, Serialize};
 
 use crate::domain::{
-    entities::events::CreateEventEntity, value_objects::event_statuses::EventStatuses,
+    entities::events::CreateEventEntity, value_objects::{event_statuses::EventStatuses, zone_model::CreateZoneModel},
 };
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -13,6 +13,7 @@ pub struct CreateEventModel {
     pub performer: String,
     pub date: String,
     pub location: String,
+    pub create_zone: Option<Vec<CreateZoneModel>>,
 }
 
 impl CreateEventModel {

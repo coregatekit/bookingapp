@@ -20,6 +20,7 @@ mod test {
             performer: "Test Performer".to_string(),
             date: "2026-02-01T10:00:00Z".to_string(),
             location: "Test Location".to_string(),
+            create_zone: None,
         };
 
         mock_event_repo
