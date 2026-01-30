@@ -1,36 +1,43 @@
-use crate::domain::{
-    entities::zones::ZoneEntity,
-    repositories::{events::EventsRepository, zones::ZonesRepository},
-    value_objects::zone_model::CreateZoneModel,
+use crate::{
+    application::usecases::zones_port::ZonesPort,
+    domain::{
+        entities::zones::ZoneEntity,
+        repositories::{events::EventsRepository, zones::ZonesRepository},
+        value_objects::zone_model::CreateZoneModel,
+    },
 };
 use anyhow::{Ok, Result};
+use async_trait::async_trait;
 use uuid::Uuid;
 
-pub struct ZonesUseCase<T1, T2>
+pub struct ZonesUseCase<ZT, ET>
 where
-    T1: ZonesRepository + Send + Sync,
-    T2: EventsRepository + Send + Sync,
+    ZT: ZonesRepository + Send + Sync,
+    ET: EventsRepository + Send + Sync,
 {
-    zones_repository: std::sync::Arc<T1>,
-    events_repository: std::sync::Arc<T2>,
+    zones_repository: std::sync::Arc<ZT>,
+    events_repository: std::sync::Arc<ET>,
 }
 
-impl<T1, T2> ZonesUseCase<T1, T2>
-where
-    T1: ZonesRepository + Send + Sync,
-    T2: EventsRepository + Send + Sync,
-{
+impl<ZT: ZonesRepository + Send + Sync, ET: EventsRepository + Send + Sync> ZonesUseCase<ZT, ET> {
     pub fn new(
-        zones_repository: std::sync::Arc<T1>,
-        events_repository: std::sync::Arc<T2>,
+        zones_repository: std::sync::Arc<ZT>,
+        events_repository: std::sync::Arc<ET>,
     ) -> Self {
         Self {
             zones_repository,
             events_repository,
         }
     }
+}
 
-    pub async fn create_zone(
+#[async_trait]
+impl<ZT, ET> ZonesPort for ZonesUseCase<ZT, ET>
+where
+    ZT: ZonesRepository + Send + Sync,
+    ET: EventsRepository + Send + Sync,
+{
+    async fn create_zones(
         &self,
         event_id: Uuid,
         create_zone_models: Vec<CreateZoneModel>,

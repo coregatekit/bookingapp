@@ -6,7 +6,7 @@ mod test {
     use uuid::Uuid;
 
     use crate::{
-        application::usecases::events::EventsUseCase,
+        application::usecases::{events::EventsUseCase, zones_port::MockZonesPort},
         domain::{repositories::events::MockEventsRepository, value_objects::event_model::CreateEventModel},
     };
 
@@ -27,7 +27,9 @@ mod test {
             .expect_create()
             .returning(move |_| Box::pin(async move { Ok(mock_event_id) }));
 
-        let use_case = EventsUseCase::new(Arc::new(mock_event_repo));
+        let mock_zones_usecase = MockZonesPort::new();
+
+        let use_case = EventsUseCase::new(Arc::new(mock_event_repo), Arc::new(mock_zones_usecase));
 
         let result = use_case.create(mock_create_event_model).await;
 

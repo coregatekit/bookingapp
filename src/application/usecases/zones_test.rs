@@ -6,7 +6,7 @@ mod test {
     use uuid::Uuid;
 
     use crate::{
-        application::usecases::zones::ZonesUseCase,
+        application::usecases::{zones::ZonesUseCase, zones_port::ZonesPort},
         domain::{
             entities::zones::ZoneEntity,
             repositories::{events::MockEventsRepository, zones::MockZonesRepository},
@@ -17,7 +17,7 @@ mod test {
     #[tokio::test]
     async fn test_check_event_existence_before_create_zone() {
         let mut mock_event_repo = MockEventsRepository::new();
-        let mock_zone_repo = MockZonesRepository::new();
+        let mut mock_zone_repo = MockZonesRepository::new();
 
         let event_id = Uuid::now_v7();
         let expected_event_id = event_id;
@@ -26,6 +26,10 @@ mod test {
             .expect_check_existence()
             .withf(move |id| *id == expected_event_id)
             .returning(|_| Box::pin(async { Ok(true) }));
+
+        mock_zone_repo
+            .expect_create_zones()
+            .returning(|_, _| Box::pin(async { Ok(vec![]) }));
 
         let use_case = ZonesUseCase::new(Arc::new(mock_zone_repo), Arc::new(mock_event_repo));
 
@@ -36,7 +40,7 @@ mod test {
             total_seats: 50,
         });
 
-        let result = use_case.create_zone(event_id, create_zone_models).await;
+        let result = use_case.create_zones(event_id, create_zone_models).await;
 
         assert!(result.is_ok());
     }
@@ -63,7 +67,7 @@ mod test {
             total_seats: 50,
         });
 
-        let result = use_case.create_zone(event_id, create_zone_models).await;
+        let result = use_case.create_zones(event_id, create_zone_models).await;
 
         assert!(result.is_err());
     }
@@ -118,7 +122,7 @@ mod test {
             total_seats: 50,
         });
 
-        let result = use_case.create_zone(event_id, create_zone_models).await;
+        let result = use_case.create_zones(event_id, create_zone_models).await;
 
         assert!(result.is_ok());
         let zones = result.unwrap();
