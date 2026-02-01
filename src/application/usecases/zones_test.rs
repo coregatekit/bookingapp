@@ -133,4 +133,50 @@ mod test {
         assert!(zones.contains(&mock_zone_id_1));
         assert!(zones.contains(&mock_zone_id_2));
     }
+
+    #[tokio::test]
+    async fn test_get_zones_by_event_id_successfully() {
+        let mut mock_zone_repo = MockZonesRepository::new();
+
+        let event_id = Uuid::now_v7();
+        let mock_zone_id_1 = Uuid::now_v7();
+        let mock_zone_id_2 = Uuid::now_v7();
+        let now = Utc::now();
+
+        mock_zone_repo.expect_get_zones_by_event_id().returning(move |_| {
+            let now_clone = now;
+            Box::pin(async move {
+                Ok(vec![
+                    ZoneEntity {
+                        id: mock_zone_id_1,
+                        event_id: event_id,
+                        label: "VIP".to_string(),
+                        price: "150.00".parse().unwrap(),
+                        total_seats: 50,
+                        created_at: now_clone,
+                        updated_at: now_clone,
+                    },
+                    ZoneEntity {
+                        id: mock_zone_id_2,
+                        event_id: event_id,
+                        label: "VVIP".to_string(),
+                        price: "200.00".parse().unwrap(),
+                        total_seats: 50,
+                        created_at: now_clone,
+                        updated_at: now_clone,
+                    },
+                ])
+            })
+        });
+
+        let use_case = ZonesUseCase::new(Arc::new(mock_zone_repo), Arc::new(MockEventsRepository::new()));
+
+        let result = use_case.get_zones_by_event_id(event_id).await;
+
+        assert!(result.is_ok());
+        let zones = result.unwrap();
+        assert_eq!(zones.len(), 2);
+        assert!(zones.iter().any(|zone| zone.id == mock_zone_id_1));
+        assert!(zones.iter().any(|zone| zone.id == mock_zone_id_2));
+    }
 }

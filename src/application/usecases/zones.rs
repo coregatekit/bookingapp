@@ -1,8 +1,7 @@
 use crate::{
     application::usecases::zones_port::ZonesPort,
     domain::{
-        repositories::{events::EventsRepository, zones::ZonesRepository},
-        value_objects::zone_model::CreateZoneModel,
+        entities::zones::ZoneEntity, repositories::{events::EventsRepository, zones::ZonesRepository}, value_objects::zone_model::CreateZoneModel
     },
 };
 use anyhow::{Ok, Result};
@@ -59,5 +58,11 @@ where
         let result = zones.iter().map(|zone| zone.id).collect();
 
         Ok(result)
+    }
+
+    async fn get_zones_by_event_id(&self, event_id: Uuid) -> Result<Vec<ZoneEntity>> {
+        let zones = self.zones_repository.get_zones_by_event_id(event_id).await?;
+        // TODO: implement optional for nested seats
+        Ok(zones)
     }
 }
