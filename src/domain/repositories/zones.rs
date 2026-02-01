@@ -15,4 +15,5 @@ pub trait ZonesRepository {
         create_zones: Vec<CreateZoneEntity>,
     ) -> Result<Vec<ZoneEntity>>;
     async fn get_zone_info(&self, event_id: Uuid) -> Result<ZoneEntity>;
+    async fn get_zones_by_event_id(&self, event_id: Uuid) -> Result<Vec<ZoneEntity>>;
 }
