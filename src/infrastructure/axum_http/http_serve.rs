@@ -27,6 +27,7 @@ pub async fn start(config: Arc<DotEnvyConfig>, db_pool: Arc<PgPoolSquad>) -> Res
     let app = Router::new()
         .fallback(default_routers::not_found)
         .nest("/api/users", routers::users::routes(Arc::clone(&db_pool)))
+        .nest("/api/events", routers::events::routes(Arc::clone(&db_pool)))
         .route("/api/health", get(default_routers::health_check))
         .layer(TimeoutLayer::with_status_code(
             StatusCode::REQUEST_TIMEOUT,
