@@ -20,7 +20,9 @@ pub fn routes(db_pool: Arc<PgPoolSquad>) -> Router {
     let users_repository = UserPostgres::new(db_pool);
     let users_usecase = UsersUseCase::new(Arc::new(users_repository));
 
-    Router::new().route("/find/{email}", get(find_by_email)).with_state(Arc::new(users_usecase))
+    Router::new()
+        .route("/find/{email}", get(find_by_email))
+        .with_state(Arc::new(users_usecase))
 }
 
 pub async fn find_by_email<T>(
